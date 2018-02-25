@@ -5,8 +5,8 @@ from struct import pack
 from time import time, sleep
 
 SHUNT_OHMS = 0.1
-BATTERY_LOG = './data/battery'
-SOLAR_LOG = './data/solar'
+BATTERY_LOG = '/home/pi/solarpi/data/battery'
+SOLAR_LOG = '/home/pi/solarpi/data/solar'
 
 def save_line(path, voltage, current):
     with open(path, 'ab') as f:
@@ -21,13 +21,21 @@ def main():
     print('Monitoring power...')
 
     while True:
-       battery.wake()
-       save_line(BATTERY_LOG, battery.voltage(), battery.current()) 
-       battery.sleep()
-       solar.wake()
-       save_line(SOLAR_LOG, solar.voltage(), solar.current())
-       solar.sleep()
-       sleep(1)
+        battery.wake()
+        try:
+            save_line(BATTERY_LOG, battery.voltage(), battery.current()) 
+        except DeviceRangeError as e:
+            print(e)
+        battery.sleep()
+
+        solar.wake()
+        try:
+            save_line(SOLAR_LOG, solar.voltage(), solar.current())
+        except DeviceRangeError as e:
+            print(e)
+        solar.sleep()
+
+        sleep(1)
 
 if __name__ == "__main__":
     main()
