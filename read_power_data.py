@@ -6,9 +6,8 @@ BATTERY_LOG = './data/battery'
 SOLAR_LOG = './data/solar'
 
 def read(path):
-    def read(path):
     with open(path, 'rb') as f:
-        return [x for x in iter_unpack('Lff', f.read())]
+        return [x for x in iter_unpack('<Lff', f.read())]
 
 def main():
     print('datetime (epoch) - voltage (V) - current (mA)')

@@ -10,7 +10,8 @@ SOLAR_LOG = '/home/pi/solarpi/data/solar'
 
 def save_line(path, voltage, current):
     with open(path, 'ab') as f:
-        f.write(pack('Lff', int(time()), voltage, current)) # write as uint32 (unsigned long), float32, float32
+        # write as uint32 (unsigned long), float32, float32, in little-endian
+        f.write(pack('<Lff', int(time()), voltage, current))
 
 def main():
     battery = INA219(SHUNT_OHMS, address=0x41)
