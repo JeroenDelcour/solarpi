@@ -63,7 +63,7 @@ To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB
     - [ ] Control Raspberry Pi with Arduino Nano
         - [ ] send shutdown signal to Pi when battery is almost empty
         - [ ] control power to the Pi using a relay controlled by the Arduino
-- [ ] Try a different 5V (or 3V) converter. Currently, I'm using 156mA to get 75mA out (about 50% efficiency).
+- [ ] Try a different 5V (or 3V) converter. Currently, I'm using 600mW to get 375mW out (only 62.5% efficiency!). Maybe a buck boost converter?
 
 ### Sources
 
