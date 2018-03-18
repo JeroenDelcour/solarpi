@@ -1,5 +1,5 @@
 ARDUINO_DIR  = /usr/share/arduino
-ARDUINO_LIBS = Wire SPI SD Adafruit_INA219 Time
+ARDUINO_LIBS = Time
 BOARD_TAG    = nano328
 ARDUINO_PORT = /dev/ttyUSB0
 
