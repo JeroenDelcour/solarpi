@@ -15,29 +15,6 @@
 #define TIME_HEADER  "T"   // Header tag for serial time sync message
 #define TIME_REQUEST  7    // ASCII bell character requests a time sync message 
 
-void printDigits(int digits){
-  // utility function for digital clock display: prints preceding colon and leading 0
-  Serial.print(":");
-  if(digits < 10)
-    Serial.print('0');
-  Serial.print(digits);
-}
-
-
-void digitalClockDisplay(){
-  // digital clock display of the time
-  Serial.print(hour());
-  printDigits(minute());
-  printDigits(second());
-  Serial.print(" ");
-  Serial.print(day());
-  Serial.print(" ");
-  Serial.print(month());
-  Serial.print(" ");
-  Serial.print(year()); 
-  Serial.println(); 
-}
-
 void processSyncMessage() {
   unsigned long pctime;
   const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013
@@ -58,10 +35,8 @@ time_t requestSync()
 
 void setup()  {
   Serial.begin(9600);
-  while (!Serial) ; // Needed for Leonardo only
-  pinMode(13, OUTPUT);
-  setSyncProvider( requestSync);  //set function to call when sync required
-  Serial.println("Waiting for sync message");
+  setSyncProvider( requestSync);  //set function to call when time sync required
+  Serial.println("Waiting for time sync message");
 }
 
 void loop(){    
@@ -69,12 +44,7 @@ void loop(){
     processSyncMessage();
   }
   if (timeStatus()!= timeNotSet) {
-    digitalClockDisplay();  
-  }
-  if (timeStatus() == timeSet) {
-    digitalWrite(13, HIGH); // LED on if synced
-  } else {
-    digitalWrite(13, LOW);  // LED off if needs refresh
+    Serial.println(now());
   }
   delay(1000);
 }

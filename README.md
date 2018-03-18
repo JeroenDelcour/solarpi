@@ -25,7 +25,7 @@ This project uses [Sudar's Arduino Makefile](https://github.com/sudar/Arduino-Ma
 
 Then run `make` in `arduino/monitor`. Hopefully there are no errors. To upload to the Arduino, run `sudo make upload`.
 
-At this point, the Arduino will wait until it is given the current epoch time (seconds since January 1, 1970). This is because it stores the datetime alongside each measurement, and its clock is reset with every reset. To give it the current datetime, set up the Python environment and run `python sync_arduino_time.py -b 9600 -d /dev/ttyUSB0` (or whatever port your Arduino is connected to).
+At this point, the Arduino will wait until it is given the current epoch time (seconds since January 1, 1970). This is because it stores the datetime alongside each measurement, and its clock is reset with every reset. To give it the current datetime, set up the Python environment and run `python sync_arduino_time.py -b 9600 -d /dev/ttyUSB0` (or whatever port your Arduino is connected to). The Arduino's internal clock will drift slightly over long periods of time. The `sync_arduino_time.py` can be rerun at any time to re-sync the Arduino.
 
 To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB0` (again, change to your Arduino port). That should show you regularly updating measurements over the serial interface.
 
@@ -52,17 +52,18 @@ To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB
 
 - [-] Use Arduino Nano to monitor power (uses MUCH less power, so better for continuous monitoring)
     - [x] wire up Arduino Nano to SD card module
-    - [-] Wire up Arduino Nano to current sensors
+    - [x] Wire up Arduino Nano to current sensors
     - [-] Write current and voltage to SD card 
         - [x] read current and voltage
-        - [-] get current datetime
-            - [-] It's easy to get the elapsed time, but to get the current time I'll need to sync system time with Arduino when it's initialized
-            - [-] write to SD card [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
+        - [x] get current datetime
+            - [x] It's easy to get the elapsed time, but to get the current time I'll need to sync system time with Arduino when it's initialized
+        - [-] write to SD card [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
     - [ ] Be able to read logged data over WiFi
         - [ ] maybe have the Pi request the full data file from the Arduino on demand?
     - [ ] Control Raspberry Pi with Arduino Nano
         - [ ] send shutdown signal to Pi when battery is almost empty
         - [ ] control power to the Pi using a relay controlled by the Arduino
+- [ ] Try a different 5V (or 3V) converter. Currently, I'm using 156mA to get 75mA out (about 50% efficiency).
 
 ### Sources
 
