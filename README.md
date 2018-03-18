@@ -40,10 +40,11 @@ sudo git clone https://github.com/PaulStoffregen/Time
 - [-] Use Arduino Nano to monitor power (uses MUCH less power, so better for continuous monitoring)
     - [x] wire up Arduino Nano to SD card module
     - [-] Wire up Arduino Nano to current sensors
-    - [ ] Write current and voltage to SD card 
-        - [ ] read current and voltage
+    - [-] Write current and voltage to SD card 
+        - [x] read current and voltage
         - [ ] get current datetime
-        - [ ] write to SD card [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
+            - [ ] It's easy to get the elapsed time, but to get the current time I'll need to sync system time with Arduino when it's initialized
+            - [-] write to SD card [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
     - [ ] Be able to read logged data over WiFi
         - [ ] maybe have the Pi request the full data file from the Arduino on demand?
     - [ ] Control Raspberry Pi with Arduino Nano
