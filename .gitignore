@@ -1,2 +1,6 @@
 data/
 .ipynb_checkpoints/
+SolarPi-env/
+
+# Arduino build files
+arduino/*/build-*
