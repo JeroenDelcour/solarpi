@@ -50,20 +50,21 @@ To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB
 
 ## To-do
 
-- [-] Use Arduino Nano to monitor power (uses MUCH less power, so better for continuous monitoring)
+- [x] Use Arduino Nano to monitor power (uses MUCH less power, so better for continuous monitoring)
     - [x] wire up Arduino Nano to SD card module
     - [x] Wire up Arduino Nano to current sensors
-    - [-] Write current and voltage to SD card 
+    - [x] Write current and voltage to SD card 
         - [x] read current and voltage
         - [x] get current datetime
             - [x] It's easy to get the elapsed time, but to get the current time I'll need to sync system time with Arduino when it's initialized
-        - [-] write to SD card [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
-    - [ ] Be able to read logged data over WiFi
-        - [ ] maybe have the Pi request the full data file from the Arduino on demand?
-    - [ ] Control Raspberry Pi with Arduino Nano
-        - [ ] send shutdown signal to Pi when battery is almost empty
-        - [ ] control power to the Pi using a relay controlled by the Arduino
-- [ ] Try a different 5V (or 3V) converter. Currently, I'm using 600mW to get 375mW out (only 62.5% efficiency!). Maybe a buck boost converter?
+        - [x] write to SD card in CSV format
+- [ ] write to SD card more [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
+- [ ] Be able to read logged data over WiFi
+    - [ ] maybe have the Pi request the full data file from the Arduino on demand?
+- [ ] Control Raspberry Pi with Arduino Nano
+    - [ ] send shutdown signal to Pi when battery is almost empty
+    - [ ] control power to the Pi using a relay controlled by the Arduino
+- [ ] Try a different 5V (or 3V) converter. The current one using 600mW to get 375mW out (only 62.5% efficiency!). Maybe a buck boost converter?
 
 ### Sources
 
