@@ -46,9 +46,6 @@ void printDigits(int digits){
 void setup() {
     // Open serial communications and wait for port to open:
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect. Needed for native USB port only
-    }
     if (!SD.begin(4)) {
         Serial.println("SD card initialization failed! Is it connected?");
         return;
