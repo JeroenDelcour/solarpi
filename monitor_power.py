@@ -5,6 +5,7 @@ from struct import pack
 from time import time, sleep
 
 SHUNT_OHMS = 0.1
+#MAX_EXPECTED_AMPS = 0.4
 BATTERY_LOG = '/home/pi/solarpi/data/battery'
 SOLAR_LOG = '/home/pi/solarpi/data/solar'
 
@@ -16,8 +17,8 @@ def save_line(path, voltage, current):
 def main():
     battery = INA219(SHUNT_OHMS, address=0x41)
     solar = INA219(SHUNT_OHMS, address=0x40)
-    battery.configure()
-    solar.configure()
+    battery.configure(battery.RANGE_16V)
+    solar.configure(solar.RANGE_16V)
 
     print('Monitoring power...')
 
@@ -36,7 +37,11 @@ def main():
             print(e)
         solar.sleep()
 
+        battery.sleep()
+        solar.sleep()
         sleep(1)
+        battery.wake()
+        solar.wake()
 
 if __name__ == "__main__":
     main()
