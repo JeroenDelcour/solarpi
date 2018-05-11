@@ -18,14 +18,14 @@ battery = battery.set_index('datetime')
 battery.index = pd.to_datetime(battery.index, unit='s')
 battery['power (mW)'] = battery['voltage (V)'] * battery['current (mA)']
 
-fig, axes = plt.subplots(ncols=2, nrows=3, figsize=(16,9), sharex=True)
+fig, axes = plt.subplots(ncols=2, nrows=3, figsize=(16,9), sharex=True, sharey='row')
 
+axes[0,1].get_shared_y_axes().remove(axes[0,0]) # decouple just this row
+axes[0,0].set_ylim([3.2,4.2])
+axes[0,1].set_ylim([0,6])
 for i,x in enumerate([battery, solar]):
     for j in range(3):
         axes[j,i].set_title(['battery', 'solar'][i])
-    axes[0,0].set_ylim([3.2,4.2])
-    axes[1,i].set_ylim([0,500])
-    axes[2,i].set_ylim([0,1500])
     axes[0,i].set_ylabel('voltage (V)')
     axes[1,i].set_ylabel('current (mA)')
     axes[2,i].set_ylabel('power (mW)')
