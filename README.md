@@ -2,9 +2,10 @@
 
 Attempt to run a Raspberry Pi Zero completely on solar power, using an Arduino Nano to monitor and control power to the Pi.
 
-## Dependencies
 
-The stuff needed to compile the Arduino code:
+## Compiling the Arduino code
+
+### Dependencies
 
 `sudo apt-get install build-essential arduino arduino-core arduino-mk`
 
@@ -15,8 +16,6 @@ cd /usr/share/arduino/libraries/
 sudo git clone https://github.com/adafruit/Adafruit_INA219
 sudo git clone https://github.com/PaulStoffregen/Time
 ```
-
-## Compiling the Arduino code
 
 This project uses [Sudar's Arduino Makefile](https://github.com/sudar/Arduino-Makefile). In `arduino/monitor/` there's a `Makefile`. You'll need to change some parameters to suit your situation (see the [list of useful variables](https://github.com/sudar/Arduino-Makefile#useful-variables) for more info:
 
@@ -35,6 +34,16 @@ To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB
 2. Activate it: `source SolarPi-env/bin/activate`
 3. Install Python dependencies: `pip install -r requirements.txt`
 
+## Start monitoring on boot
+
+Add the following to crontab (`crontab -e` to edit crontab file):
+
+```
+@reboot python3 /home/pi/solarpi/monitor.py
+```
+
+Don't forget to change the path to where you put it.
+
 ## Raspberry Pi power saving tricks
 
 ### Works
@@ -52,21 +61,9 @@ To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB
 
 ## To-do
 
-- [x] Use Arduino Nano to monitor power (uses MUCH less power, so better for continuous monitoring)
-    - [x] wire up Arduino Nano to SD card module
-    - [x] Wire up Arduino Nano to current sensors
-    - [x] Write current and voltage to SD card 
-        - [x] read current and voltage
-        - [x] get current datetime
-            - [x] It's easy to get the elapsed time, but to get the current time I'll need to sync system time with Arduino when it's initialized
-        - [x] write to SD card in CSV format
-- [ ] write to SD card more [efficiently](https://hackingmajenkoblog.wordpress.com/2016/03/25/fast-efficient-data-storage-on-an-arduino/)
-- [ ] Be able to read logged data over WiFi
-    - [ ] maybe have the Pi request the full data file from the Arduino on demand?
-- [ ] Control Raspberry Pi with Arduino Nano
-    - [ ] send shutdown signal to Pi when battery is almost empty
-    - [ ] control power to the Pi using a relay controlled by the Arduino
-- [ ] Try a different 5V (or 3V) converter. The current one using 600mW to get 375mW out (only 62.5% efficiency!). Maybe a buck boost converter?
+- [ ] Use Arduino Nano for 'sleep' mode
+    - [ ] send shutdown signal to Pi when battery is low
+    - [ ] control power to Pi with MOSFET controlled by Arduino
 
 ### Sources
 
