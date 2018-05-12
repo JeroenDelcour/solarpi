@@ -7,8 +7,8 @@ from struct import iter_unpack
 def read(path):
     with open(path, 'rb') as f:
         return [x for x in iter_unpack('<Lff', f.read())]
-solar   = pd.DataFrame(read('./data/solar'),   columns=['datetime', 'voltage (V)', 'current (mA)'])
-battery = pd.DataFrame(read('./data/battery'), columns=['datetime', 'voltage (V)', 'current (mA)'])
+solar   = pd.DataFrame(read('./data/solar.data'),   columns=['datetime', 'voltage (V)', 'current (mA)'])
+battery = pd.DataFrame(read('./data/battery.data'), columns=['datetime', 'voltage (V)', 'current (mA)'])
 solar   = solar[solar['datetime']>0]
 battery = battery[battery['datetime']>0]
 solar = solar.set_index('datetime')
