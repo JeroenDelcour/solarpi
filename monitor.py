@@ -44,7 +44,7 @@ def main():
 
         if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
             print('Battery voltage ({}) below safe minimum ({})! Shutting down soon...'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
-            system("sudo shutdown -r +5 'Battery voltage below safe minimum! Shutting down soon.'")
+            system("sudo shutdown -h +5 'Battery voltage below safe minimum! Shutting down soon.'")
             shutting_down = True
 
         sleep(1)
