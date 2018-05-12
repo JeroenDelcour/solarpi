@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from ina219 import INA219
-from ina219 import DeviceRangeError
+from ina219 import INA219, DeviceRangeError
 from struct import pack
 from time import time, sleep
 from psutil import cpu_percent, virtual_memory
@@ -35,8 +34,6 @@ def main():
             save_line(SOLAR_LOG, solar.voltage(), solar.current())
         except DeviceRangeError as e:
             print(e)
-        solar.sleep()
-        battery.sleep()
         solar.sleep()
 
         save_line(SYSTEM_LOG, cpu_percent(), virtual_memory().percent)
