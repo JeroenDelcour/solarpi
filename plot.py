@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from struct import iter_unpack
 
+days = 14
+
 # Read from binary
 def read(path):
     with open(path, 'rb') as f:
@@ -14,9 +16,11 @@ battery = battery[battery['datetime']>0]
 solar = solar.set_index('datetime')
 solar.index = pd.to_datetime(solar.index, unit='s')
 solar['power (mW)'] = solar['voltage (V)'] * solar['current (mA)']
+solar = solar.sort_index()
 battery = battery.set_index('datetime')
 battery.index = pd.to_datetime(battery.index, unit='s')
 battery['power (mW)'] = battery['voltage (V)'] * battery['current (mA)']
+battery = battery.sort_index()
 
 fig, axes = plt.subplots(ncols=2, nrows=3, figsize=(16,9), sharex=True, sharey='row')
 
@@ -29,9 +33,9 @@ for i,x in enumerate([battery, solar]):
     axes[0,i].set_ylabel('voltage (V)')
     axes[1,i].set_ylabel('current (mA)')
     axes[2,i].set_ylabel('power (mW)')
-    x.loc[:, 'voltage (V)'].plot(ax=axes[0,i], style='.', markersize=1)
-    x.loc[:, 'current (mA)'].plot(ax=axes[1,i], style='.', markersize=1)
-    x.loc[:, 'power (mW)'].plot(ax=axes[2,i], style='.', markersize=1)
+    x.loc[x.last_valid_index()-pd.DateOffset(days, 'D'):, 'voltage (V)'].plot(ax=axes[0,i], style='.', markersize=1)
+    x.loc[x.last_valid_index()-pd.DateOffset(days, 'D'):, 'current (mA)'].plot(ax=axes[1,i], style='.', markersize=1)
+    x.loc[x.last_valid_index()-pd.DateOffset(days, 'D'):, 'power (mW)'].plot(ax=axes[2,i], style='.', markersize=1)
 
 plt.tight_layout()
 plt.show()
