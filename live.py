@@ -1,7 +1,7 @@
-from os import SEEK_END
 from struct import unpack
 from time import sleep
 import argparse
+from helpers import tail
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Print tail of power readings. Readings are live if monitor script is running.')
@@ -17,11 +17,6 @@ def parse_args():
 BATTERY_LOG = './data/battery.data'
 SOLAR_LOG = './data/solar.data'
 SYSTEM_LOG = './data/system.data'
-
-def tail(path):
-    with open(path, 'rb') as f:
-        f.seek(-12, SEEK_END) # last 12 bytes
-        return unpack('<Lff', f.read())
 
 def main(args):
     while True:

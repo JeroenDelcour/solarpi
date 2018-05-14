@@ -1,0 +1,3 @@
+[submodule "asciiplot"]
+	path = asciiplot
+	url = https://github.com/Waateur/asciiplot
