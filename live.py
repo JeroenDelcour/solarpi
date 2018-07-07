@@ -1,7 +1,7 @@
 from struct import unpack
 from time import sleep
 import argparse
-from helpers import tail
+from utils import tail
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Print tail of power readings. Readings are live if monitor script is running.')
