@@ -29,14 +29,14 @@ def main():
         try:
             battery_voltage = battery.voltage()
             save_line(BATTERY_LOG, battery_voltage, battery.current()) 
-        except DeviceRangeError as e:
+        except (DeviceRangeError, OSError) as e:
             print(e)
         battery.sleep()
 
         solar.wake()
         try:
             save_line(SOLAR_LOG, solar.voltage(), solar.current())
-        except DeviceRangeError as e:
+        except (DeviceRangeError, OSError) as e:
             print(e)
         solar.sleep()
 
