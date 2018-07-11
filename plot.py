@@ -2,15 +2,27 @@
 import pandas as pd
 import termplot as tplot
 from utils import read
+from numpy import int64
 
-last_days = 1
+last_days = 7
 
-solar   = pd.DataFrame(list(read('./data/solar.data', last_days=last_days)),   columns=['datetime', 'voltage (V)', 'current (mA)'])
+solar   = pd.DataFrame(list(read('./data/solar.data', last_days=last_days)), columns=['datetime', 'voltage (V)', 'current (mA)'])
 battery = pd.DataFrame(list(read('./data/battery.data', last_days=last_days)), columns=['datetime', 'voltage (V)', 'current (mA)'])
 system  = pd.DataFrame(list(read('./data/system.data', last_days=last_days)), columns=['datetime', 'CPU', 'RAM'])
-solar   = solar[solar['datetime']>0]
-battery = battery[battery['datetime']>0]
-system  = system[system['datetime']>0]
+
+def prep(df):
+    df = df[df['datetime']>0]
+    df['datetime'] = pd.to_datetime(df['datetime'], unit='s')
+    df = df.set_index('datetime')
+    df = df.resample('T').median() # average per minute
+    df = df.reset_index()
+    df['datetime'] = df['datetime'].astype(int64) // 10 ** 9
+    return df
+
+solar = prep(solar)
+battery = prep(battery)
+system = prep(system)
+
 solar['power (mW)']   = solar['voltage (V)']   * solar['current (mA)']
 battery['power (mW)'] = battery['voltage (V)'] * battery['current (mA)']
 
