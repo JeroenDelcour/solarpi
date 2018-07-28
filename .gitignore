@@ -2,6 +2,7 @@ data/
 .ipynb_checkpoints/
 solarpi-env/
 __pycache__
+monitor.log
 
 # Arduino build files
 arduino/*/build-*
