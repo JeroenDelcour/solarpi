@@ -6,7 +6,7 @@ from psutil import cpu_percent, virtual_memory
 from os import system
 import logging
 
-logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.ERROR, format='%(asctime)s %(message)s')
 
 SHUNT_OHMS = 0.1
 #MAX_EXPECTED_AMPS = 0.4
