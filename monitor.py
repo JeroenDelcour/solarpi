@@ -25,27 +25,30 @@ def main():
     shutting_down = False
 
     while True:
-        battery.wake()
         try:
-            battery_voltage = battery.voltage()
-            save_line(BATTERY_LOG, battery_voltage, battery.current()) 
-        except (DeviceRangeError, OSError) as e:
+            battery.wake()
+            try:
+                battery_voltage = battery.voltage()
+                save_line(BATTERY_LOG, battery_voltage, battery.current()) 
+            except (DeviceRangeError, OSError) as e:
+                print(e)
+            battery.sleep()
+
+            solar.wake()
+            try:
+                save_line(SOLAR_LOG, solar.voltage(), solar.current())
+            except (DeviceRangeError, OSError) as e:
+                print(e)
+            solar.sleep()
+
+            save_line(SYSTEM_LOG, cpu_percent(), virtual_memory().percent)
+
+            if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
+                print('Battery voltage ({}) below safe minimum ({})! Shutting down soon...'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
+                system("sudo shutdown -h +5 'Battery voltage below safe minimum! Shutting down soon.'")
+                shutting_down = True
+        except(e):
             print(e)
-        battery.sleep()
-
-        solar.wake()
-        try:
-            save_line(SOLAR_LOG, solar.voltage(), solar.current())
-        except (DeviceRangeError, OSError) as e:
-            print(e)
-        solar.sleep()
-
-        save_line(SYSTEM_LOG, cpu_percent(), virtual_memory().percent)
-
-        if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
-            print('Battery voltage ({}) below safe minimum ({})! Shutting down soon...'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
-            system("sudo shutdown -h +5 'Battery voltage below safe minimum! Shutting down soon.'")
-            shutting_down = True
 
         sleep(1)
 
