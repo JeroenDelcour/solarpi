@@ -6,7 +6,7 @@ from psutil import cpu_percent, virtual_memory
 from os import system
 import logging
 
-logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.ERROR, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.WARNING, format='%(asctime)s %(message)s')
 
 SHUNT_OHMS = 0.1
 #MAX_EXPECTED_AMPS = 0.4
@@ -33,25 +33,30 @@ def main():
             try:
                 battery_voltage = battery.voltage()
                 save_line(BATTERY_LOG, battery_voltage, battery.current()) 
-            except (DeviceRangeError, OSError) as e:
-                logging.error(e)
+            except (DeviceRangeError, OSError):
+                pass
             battery.sleep()
-
+        except Exception as e:
+            logging.error(e)
+        try:
             solar.wake()
             try:
                 save_line(SOLAR_LOG, solar.voltage(), solar.current())
-            except (DeviceRangeError, OSError) as e:
-                logging.error(e)
+            except (DeviceRangeError, OSError):
+                pass
             solar.sleep()
-
-            save_line(SYSTEM_LOG, cpu_percent(), virtual_memory().percent)
-
-            if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
-                logging.warning('Battery voltage ({}) below safe minimum ({})! Shutting down soon...'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
-                system("sudo shutdown -h +5 'Battery voltage below safe minimum! Shutting down soon.'")
-                shutting_down = True
         except Exception as e:
             logging.error(e)
+
+        try:
+            save_line(SYSTEM_LOG, cpu_percent(), virtual_memory().percent)
+        except Exception as e:
+            logging.error(e)
+
+        if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
+            logging.warning('Battery voltage ({}) below safe minimum ({})! Shutting down soon...'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
+            system("sudo shutdown -h +5 'Battery voltage below safe minimum! Shutting down soon.'")
+            shutting_down = True
 
         sleep(1)
 
