@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from ina219 import INA219, DeviceRangeError
 from struct import pack
 from time import time, sleep
 from psutil import cpu_percent, virtual_memory
 from os import system
+from subprocess import check_output, run
 import logging
 
 logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.WARNING, format='%(asctime)s %(message)s')
@@ -13,6 +16,7 @@ SHUNT_OHMS = 0.1
 BATTERY_LOG = '/home/pi/solarpi/data/battery.data'
 SOLAR_LOG = '/home/pi/solarpi/data/solar.data'
 SYSTEM_LOG = '/home/pi/solarpi/data/system.data'
+TEMP_LOG = '/home/pi/solarpi/data/temperature.data'
 MIN_BATTERY_VOLTAGE = 3.0
 
 def save_line(path, x, y):
@@ -53,9 +57,17 @@ def main():
         except Exception as e:
             logging.error(e)
 
+        try:
+            with open('/sys/class/thermal/thermal_zone0/temp', 'r') as f:
+                cpu_temp = float(f.read().strip())/1000
+            gpu_temp = float(check_output(['vcgencmd', 'measure_temp']).decode().strip()[5:9])
+            save_line(TEMP_LOG, cpu_temp, gpu_temp)
+        except Exception as e:
+            logging.error(e)
+
         if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
-            logging.warning('Battery voltage ({}) below safe minimum ({})! Shutting down soon...'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
-            system("sudo shutdown -h +5 'Battery voltage below safe minimum! Shutting down soon.'")
+            logging.warning('Battery voltage below safe minimum ({} < {})! Shutting down soon.'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
+            run(["sudo", "shutdown", "-h", "+5", "'Battery voltage below safe minimum ({} < {})! Shutting down soon.'".format(battery_voltage, MIN_BATTERY_VOLTAGE)])
             shutting_down = True
 
         sleep(1)
