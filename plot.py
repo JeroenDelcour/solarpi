@@ -9,10 +9,10 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Plots battery, solar panel, CPU, and RAM data over time.')
-    parser.add_argument('last_days', type=int, help='Last number of days to plot.')
+    parser.add_argument('last_days', type=int, help='Last number of days to plot.', nargs='?', default=1)
     return parser.parse_args()
 
-def main(last_days=1):
+def main(last_days):
     solar       = pd.DataFrame(list(read('./data/solar.data', last_days=last_days)), columns=['datetime', 'voltage (V)', 'current (mA)'])
     battery     = pd.DataFrame(list(read('./data/battery.data', last_days=last_days)), columns=['datetime', 'voltage (V)', 'current (mA)'])
     system      = pd.DataFrame(list(read('./data/system.data', last_days=last_days)), columns=['datetime', 'CPU', 'RAM'])
