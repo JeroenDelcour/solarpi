@@ -61,6 +61,7 @@ Don't forget to change the path to where you put it.
 
 ## To-do
 
+- [ ] fix current sometimes reading zero until restart
 - [ ] Use Arduino Nano for 'sleep' mode
     - [ ] send shutdown signal to Pi when battery is low
     - [ ] control power to Pi with MOSFET controlled by Arduino
