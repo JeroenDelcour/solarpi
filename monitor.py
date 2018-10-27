@@ -25,18 +25,24 @@ def save_line(path, x, y):
         f.write(pack('<Lff', int(time()), x, y))
 
 def main():
-    battery = INA219(SHUNT_OHMS, address=0x41)
-    solar = INA219(SHUNT_OHMS, address=0x40)
-    battery.configure(battery.RANGE_16V)
-    solar.configure(solar.RANGE_16V)
+    def setup():
+        battery = INA219(SHUNT_OHMS, address=0x41)
+        solar = INA219(SHUNT_OHMS, address=0x40)
+        battery.configure(battery.RANGE_16V)
+        solar.configure(solar.RANGE_16V)
+        return battery, solar
+
+    battery, solar = setup()
     shutting_down = False
 
     while True:
         try:
             battery.wake()
             try:
-                battery_voltage = battery.voltage()
-                save_line(BATTERY_LOG, battery_voltage, battery.current()) 
+                battery_voltage, battery_current = battery.voltage(), battery.current()
+                save_line(BATTERY_LOG, battery_voltage, battery_current) 
+                if not battery_current:
+                    battery, solar = setup() # reset
             except (DeviceRangeError, OSError):
                 pass
             battery.sleep()
