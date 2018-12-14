@@ -1,48 +1,6 @@
 # SolarPi
 
-Attempt to run a Raspberry Pi Zero completely on solar power, using an Arduino Nano to monitor and control power to the Pi.
-
-
-## Compiling the Arduino code
-
-### Dependencies
-
-`sudo apt-get install build-essential arduino arduino-core arduino-mk`
-
-Arduino libraries need to be installed in `/usr/share/arduino/libraries/`:
-
-```
-cd /usr/share/arduino/libraries/
-sudo git clone https://github.com/adafruit/Adafruit_INA219
-sudo git clone https://github.com/PaulStoffregen/Time
-```
-
-This project uses [Sudar's Arduino Makefile](https://github.com/sudar/Arduino-Makefile). In `arduino/monitor/` there's a `Makefile`. You'll need to change some parameters to suit your situation (see the [list of useful variables](https://github.com/sudar/Arduino-Makefile#useful-variables) for more info:
-
-- `BOARD_TAG`: What kind of board you have (e.g. `UNO` for Arduino Uno). For a list of boards it accepts, run `make show_boards`.
-- `ARDUINO_PORT`: The port where your Arduino is plugged in, usually `/dev/ttyACM0` or `/dev/ttyUSB0` in Linux or Mac OS X. To find out, look at `dmesg | grep tty`.
-
-Then run `make` in `arduino/monitor`. Hopefully there are no errors. To upload to the Arduino, run `sudo make upload`.
-
-At this point, the Arduino will wait until it is given the current epoch time (seconds since January 1, 1970). This is because it stores the datetime alongside each measurement, and its clock is reset with every reset. To give it the current datetime, set up the Python environment and run `python sync_arduino_time.py -b 9600 -d /dev/ttyUSB0` (or whatever port your Arduino is connected to). The Arduino's internal clock will drift slightly over long periods of time. The `sync_arduino_time.py` can be rerun at any time to re-sync the Arduino.
-
-To check the Arduino code is working, you can use `ttylog -b 9600 -d /dev/ttyUSB0` (again, change to your Arduino port). That should show you regularly updating measurements over the serial interface.
-
-## Setting up the Python virtual environment
-
-1. Set up fresh Python virtual environment: `python3 -m venv SolarPi-env`
-2. Activate it: `source SolarPi-env/bin/activate`
-3. Install Python dependencies: `pip install -r requirements.txt`
-
-## Start monitoring on boot
-
-Add the following to crontab (`crontab -e` to edit crontab file):
-
-```
-@reboot python3 /home/pi/solarpi/monitor.py
-```
-
-Don't forget to change the path to where you put it.
+Attempt to run a Raspberry Pi Zero completely on solar power.
 
 ## Raspberry Pi power saving tricks
 
@@ -61,10 +19,7 @@ Don't forget to change the path to where you put it.
 
 ## To-do
 
-- [ ] fix current sometimes reading zero until restart
-- [ ] Use Arduino Nano for 'sleep' mode
-    - [ ] send shutdown signal to Pi when battery is low
-    - [ ] control power to Pi with MOSFET controlled by Arduino
+- [ ] Safe shutdown on low battery and boot back up when battery is above minimum voltage using voltage comparators. I can [monitor the Pi's power state and shut it down through GPIO](https://www.raspberrypi.org/forums/viewtopic.php?t=201483) and use reset pins to boot.
 
 ### Sources
 
