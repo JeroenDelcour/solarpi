@@ -82,7 +82,7 @@ void logSensorReading() {
   current_mA_sol = ina219_sol.getCurrent_mA();
   loadvoltage_sol = busvoltage_sol + (shuntvoltage_sol / 1000);
   
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+  File dataFile = SD.open("datalog.csv", FILE_WRITE);
   if (dataFile) {
     dataFile.print(loadvoltage_bat); dataFile.print(",");
     dataFile.print(current_mA_bat); dataFile.print(",");
@@ -150,7 +150,7 @@ void setup(void)
   
   // Initialize log file if it doesn't exist
   if (!SD.exists("datalog.csv")) {
-    File dataFile = SD.open("datalog.txt", FILE_WRITE);
+    File dataFile = SD.open("datalog.csv", FILE_WRITE);
     if (dataFile) {
       dataFile.println("battery_V,battery_mA,solar_V,solar_mA"); // header
       dataFile.close();
