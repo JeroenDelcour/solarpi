@@ -1,6 +1,15 @@
 # SolarPi
 
-Attempt to run a Raspberry Pi Zero completely on solar power.
+Attempt to run a Raspberry Pi Zero completely on solar power. Uses an Arduino (Pro Mini) to shutdown/bootup Pi based on battery voltage.
+
+## Shutdown and poweroff GPIO
+
+Add to `/boot/config.txt`:
+
+```
+dtoverlay=gpio-poweroff,gpiopin=21,active_low="y" # GPIO pin 21 (physical pin 40) will go high when the Pi is on and low when off.
+dtoverlay=gpio-shutdown,gpio_pin=20 # Pull GPIO pin 20 (physical pin 38) low to shut down Pi.
+```
 
 ## Raspberry Pi power saving tricks
 
@@ -16,10 +25,6 @@ Attempt to run a Raspberry Pi Zero completely on solar power.
 - Lower the swapiness setting so the system doesn't swap nearly as often, saving on I/O. In `/etc/sysctl.conf`, add `vm.swappiness = 1`.
 - Disable bluetooth. In `/boot/config.txt`, add `dtoverlay=pi3-disable-bt`.
 - [Turning off USB](https://www.raspberrypi.org/forums/viewtopic.php?p=894674&sid=afd97b095bbe85c0a67b1d3d03822ce1#p894674) using `echo 0 | sudo tee /sys/devices/platform/soc/20980000.usb/buspower >/dev/null`. Could be because I don't have anything connected to the USB port. (Turn it back on using `echo 1 | sudo tee /sys/devices/platform/soc/20980000.usb/buspower >/dev/null`)
-
-## To-do
-
-- [ ] Safe shutdown on low battery and boot back up when battery is above minimum voltage using voltage comparators. I can [monitor the Pi's power state and shut it down through GPIO](https://www.raspberrypi.org/forums/viewtopic.php?t=201483) and use reset pins to boot.
 
 ### Sources
 
