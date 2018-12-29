@@ -6,7 +6,6 @@ from struct import pack
 from time import time, sleep
 from psutil import cpu_percent, virtual_memory
 from os import system
-from subprocess import check_output, run
 import logging
 
 logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.WARNING, format='%(asctime)s %(message)s')
@@ -24,18 +23,22 @@ def save_line(path, x, y):
         # write as uint32 (unsigned long), float32, float32, in little-endian
         f.write(pack('<Lff', int(time()), x, y))
 
+def reset():
+    global battery
+    global solar
+    battery = INA219(SHUNT_OHMS, address=0x40)
+    solar = INA219(SHUNT_OHMS, address=0x41)
+    battery.configure(battery.RANGE_16V)
+    solar.configure(solar.RANGE_16V)
+
 def main():
-    def setup():
-        battery = INA219(SHUNT_OHMS, address=0x41)
-        solar = INA219(SHUNT_OHMS, address=0x40)
-        battery.configure(battery.RANGE_16V)
-        solar.configure(solar.RANGE_16V)
-        return battery, solar
+    reset()
 
-    battery, solar = setup()
-    shutting_down = False
-
+    t0 = time()
     while True:
+        if time() - t0 > 60: # reset INA219 units every so often to fix some issues
+            reset()
+            t0 = time()
         try:
             battery.wake()
             try:
@@ -70,11 +73,6 @@ def main():
             save_line(TEMP_LOG, cpu_temp, gpu_temp)
         except Exception as e:
             logging.error(e)
-
-        if not shutting_down and battery_voltage < MIN_BATTERY_VOLTAGE:
-            logging.warning('Battery voltage below safe minimum ({} < {})! Shutting down soon.'.format(battery_voltage, MIN_BATTERY_VOLTAGE))
-            run(["sudo", "shutdown", "-h", "+5", "'Battery voltage below safe minimum ({} < {})! Shutting down soon.'".format(battery_voltage, MIN_BATTERY_VOLTAGE)])
-            shutting_down = True
 
         sleep(1)
 
