@@ -6,6 +6,7 @@ from struct import pack
 from time import time, sleep
 from psutil import cpu_percent, virtual_memory
 from os import system
+from subprocess import check_output
 import logging
 
 logging.basicConfig(filename='/home/pi/solarpi/monitor.log', level=logging.WARNING, format='%(asctime)s %(message)s')
@@ -44,8 +45,6 @@ def main():
             try:
                 battery_voltage, battery_current = battery.voltage(), battery.current()
                 save_line(BATTERY_LOG, battery_voltage, battery_current) 
-                if not battery_current:
-                    battery, solar = setup() # reset
             except (DeviceRangeError, OSError):
                 pass
             battery.sleep()
